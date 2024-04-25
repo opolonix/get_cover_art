@@ -233,17 +233,18 @@ class CoverFinder(object):
         self._cleanup(self.files_to_delete)
 
     def url_art(self, fp: str | io.BytesIO, size: int = 500) -> str:
-        
-        meta = get_meta(fp) if isinstance(fp, str) else get_fp_meta(fp)
+        try:
+            meta = get_meta(fp) if isinstance(fp, str) else get_fp_meta(fp)
 
-        (meta_artist, meta_album, info, title_only) = self.downloader._get_data(meta)
-        if info:
-            art = ""
-            results = reversed(info.get('results'))
-            results: List[dict] = list(reversed(sorted(results, key=lambda x: -datetime.datetime.strptime(x.get('releaseDate'), '%Y-%m-%dT%H:%M:%SZ').timestamp() if x.get('releaseDate') else 0)))
-            
+            (meta_artist, meta_album, info, title_only) = self.downloader._get_data(meta)
+            if info:
+                art = ""
+                results = reversed(info.get('results'))
+                results: List[dict] = list(reversed(sorted(results, key=lambda x: -datetime.datetime.strptime(x.get('releaseDate'), '%Y-%m-%dT%H:%M:%SZ').timestamp() if x.get('releaseDate') else 0)))
 
-            urls = [album_info for album_info in results if album_info.get('artworkUrl100')]
-            url = urls[-1].get('artworkUrl100') if len(urls) != 0 else None
 
-            return url.replace('100x100bb', f'{size}x{size}bb')
+                urls = [album_info for album_info in results if album_info.get('artworkUrl100')]
+                url = urls[-1].get('artworkUrl100') if len(urls) != 0 else None
+
+                return url.replace('100x100bb', f'{size}x{size}bb')
+        except: return None
