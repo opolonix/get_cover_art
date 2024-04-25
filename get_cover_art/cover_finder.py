@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List, Union
 
 from .apple_downloader import AppleDownloader
-from .meta import get_meta, MetaAudio
+from .meta import get_meta, MetaAudio, get_fp_meta
 
 DEFAULTS = {
     "art_size": "500",
@@ -234,7 +234,7 @@ class CoverFinder(object):
 
     def url_art(self, fp: str | io.BytesIO, size: int = 500) -> str:
         
-        meta = get_meta(fp if isinstance(fp, str) else fp.name)
+        meta = get_meta(fp) if isinstance(fp, str) else get_fp_meta(fp)
 
         (meta_artist, meta_album, info, title_only) = self.downloader._get_data(meta)
         if info:

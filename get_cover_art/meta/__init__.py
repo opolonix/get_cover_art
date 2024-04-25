@@ -7,6 +7,7 @@ from .meta_opus import MetaOpus
 from .meta_vorbis import MetaVorbis
 from .meta_wav import MetaWAV
 from typing import Union
+import io
 
 EXT_TO_CONSTRUCTOR = {
   'mp3': MetaMP3,
@@ -24,4 +25,11 @@ def get_meta(path: str) -> Union[MetaAudio, None]:
   constructor = EXT_TO_CONSTRUCTOR[ext]
   if constructor:
     return constructor(path)
+  return None
+
+def get_fp_meta(fp: io.BytesIO) -> Union[MetaAudio, None]:
+  ext = fp.name.split('.')[-1].lower()
+  constructor = EXT_TO_CONSTRUCTOR[ext]
+  if constructor:
+    return constructor(fp)
   return None
